@@ -1,0 +1,7 @@
+[package]
+name = "rustbot"
+version = "0.1.0"
+authors = ["lib-techdesk"]
+edition = "2018"
+
+[dependencies]
