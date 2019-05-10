@@ -1,7 +1,8 @@
 [package]
 name = "rustbot"
 version = "0.1.0"
-authors = ["lib-techdesk"]
+authors = ["Jared Dana, William Haugen"]
 edition = "2018"
 
 [dependencies]
+serenity = "0.5.13"
