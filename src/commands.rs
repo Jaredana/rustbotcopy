@@ -2,7 +2,7 @@ extern crate serenity;
 pub struct Handler;
 
 use serenity::{
-    model::{channel::Message, gateway::Ready},
+    model::{channel::Message, gateway::{Ready, Game}},
     prelude::*,
 };
 
@@ -13,7 +13,7 @@ impl EventHandler for Handler {
     // Event handlers are dispatched through a threadpool, and so multiple
     // events can be dispatched simultaneously.
     fn message(&self, _: Context, msg: Message) {
-        if msg.content == "!ping" {
+        if msg.content.contains("!ping"){
             // Sending a message can fail, due to a network error, an
             // authentication error, or lack of permissions to post in the
             // channel, so log to stdout when some error happens, with a
@@ -30,7 +30,8 @@ impl EventHandler for Handler {
     // private channels, and more.
     //
     // In this case, just print what the current user's username is.
-    fn ready(&self, _: Context, ready: Ready) {
+    fn ready(&self, ctx: Context, ready: Ready) {
+        ctx.set_game(Game::playing(&format!{"Currently in {} servers", ready.guilds.len()}));
         println!("{} is connected!", ready.user.name);
     }
 }
