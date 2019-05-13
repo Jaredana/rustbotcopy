@@ -6,7 +6,7 @@ use serenity::{
     framework::standard::{
         help_commands, Args, CommandOptions, DispatchError, HelpBehaviour, StandardFramework,
     },
-    model::{channel::Message, gateway::Ready, Permissions},
+    model::{channel::Message, gateway::{Ready, Game}, Permissions},
     prelude::*,
     utils::{content_safe, ContentSafeOptions},
 };
@@ -32,18 +32,13 @@ impl TypeMapKey for CommandCounter {
 pub struct Handler;
 
 impl EventHandler for Handler {
-    fn ready(&self, _: Context, ready: Ready) {
+    fn ready(&self, ctx: Context, ready: Ready) {
+        ctx.set_game(Game::playing(&format!{"Currently in {} servers", ready.guilds.len()}));
         println!("{} is connected!", ready.user.name);
     }
 }
 
 pub fn initialize(client: &mut Client) {
-    // Configure the client with your Discord bot token in the environment.
-    let token = env::var("DISCORD_TOKEN").expect(
-        "Expected a token in the environment",
-    );
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
-
     {
         let mut data = client.data.lock();
         data.insert::<CommandCounter>(HashMap::default());
