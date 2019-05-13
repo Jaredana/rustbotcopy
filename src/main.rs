@@ -1,8 +1,8 @@
-extern crate serenity;
+#[macro_use] extern crate serenity;
 mod commands;
 
 use std::env;
-use commands::Handler;
+use commands::{Handler, initialize};
 
 use serenity::{
     model::{channel::Message, gateway::Ready},
@@ -18,7 +18,7 @@ fn main() {
     // automatically prepend your bot token with "Bot ", which is a requirement
     // by Discord for bot users.
     let mut client = Client::new(&token, Handler).expect("Err creating client");
-
+    initialize(&mut client);
     // Finally, start a single shard, and start listening to events.
     //
     // Shards will automatically attempt to reconnect, and will perform
