@@ -1,13 +1,12 @@
 extern crate serenity;
 extern crate rand;
-use std::{collections::HashMap, env, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 mod my_cmds;
 use serenity::{
     client::bridge::gateway::{ShardManager},
     framework::standard::{
         help_commands, Args, CommandOptions, DispatchError, HelpBehaviour, StandardFramework,
     },
-    cache::Cache,
     model::{channel::Message, gateway::Ready, Permissions},
     prelude::*,
 };
@@ -188,14 +187,19 @@ pub fn initialize(client: &mut Client) {
             .command("cat", |c| c
                 .desc("Sends an emoji with a cat.")
                 .batch_known_as(vec!["kitty", "neko"]) // Adds multiple aliases
-                .bucket("emoji") // Make this command use the "emoji" bucket.
+                .bucket("fun") // Make this command use the "emoji" bucket.
                 .cmd(my_cmds::fun::cat)
                  // Allow only administrators to call this:
                 .required_permissions(Permissions::ADMINISTRATOR))
             .command("dog", |c| c
                 .desc("Sends an emoji with a dog.")
-                .bucket("emoji")
-                .cmd(my_cmds::fun::dog)))
+                .bucket("fun")
+                .cmd(my_cmds::fun::dog))
+            .command("coinflip", |c| c
+                .desc("Flips a coin")
+                .bucket("fun")
+                .cmd(my_cmds::fun::coinflip))
+        )
         .group("Math", |g| g
             // Sets a single prefix for this group.
             // So one has to call commands in this group
