@@ -26,7 +26,7 @@ command!(bird(_ctx, msg, args) {
 });
 command!(coinflip(_ctx, msg, _args) {
     let mut rng = rand::thread_rng();
-    let n1: i32 = rng.gen_range(0, 1);
+    let n1: i32 = rng.gen_range(0, 2);
     if n1 == 0{
         if let Err(why) = msg.channel_id.say("Heads") {
             println!("There was en err sending message {}" ,why);

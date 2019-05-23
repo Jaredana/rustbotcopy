@@ -178,12 +178,12 @@ pub fn initialize(client: &mut Client) {
             // Sets multiple prefixes for a group.
             // This requires us to call commands in this group
             // via `~emoji` (or `~e`) instead of just `~`.
-            .prefixes(vec!["emoji", "em"])
+            
             // Set a description to appear if a user wants to display a single group
             // e.g. via help using the group-name or one of its prefixes.
-            .desc("A group with commands providing an emoji as response.")
+            .desc("A group of fun commands")
+            
             // Sets a command that will be executed if only a group-prefix was passed.
-            .default_cmd(my_cmds::fun::bird)
             .command("cat", |c| c
                 .desc("Sends an emoji with a cat.")
                 .batch_known_as(vec!["kitty", "neko"]) // Adds multiple aliases
@@ -195,6 +195,10 @@ pub fn initialize(client: &mut Client) {
                 .desc("Sends an emoji with a dog.")
                 .bucket("fun")
                 .cmd(my_cmds::fun::dog))
+            .command("bird", |c| c
+                .desc("Sends an emoji with a bird.")
+                .bucket("fun")
+                .cmd(my_cmds::fun::bird))   
             .command("coinflip", |c| c
                 .desc("Flips a coin")
                 .bucket("fun")
