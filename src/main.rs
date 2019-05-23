@@ -1,11 +1,9 @@
 #[macro_use] extern crate serenity;
 mod commands;
-
 use std::env;
 use commands::{Handler, initialize};
 
 use serenity::{
-    model::{channel::Message, gateway::Ready},
     prelude::*,
 };
 
