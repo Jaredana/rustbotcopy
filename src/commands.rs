@@ -203,6 +203,11 @@ pub fn initialize(client: &mut Client) {
                 .desc("Flips a coin")
                 .bucket("fun")
                 .cmd(my_cmds::fun::coinflip))
+            .command("deepfry", |c| c
+                .desc("Deep frys an image")
+                .bucket("complicated")
+                .cmd(my_cmds::fun::deepfry)
+            )
         )
         .group("Math", |g| g
             // Sets a single prefix for this group.
