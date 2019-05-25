@@ -1,5 +1,6 @@
 extern crate rand;
 extern crate image;
+use std::path::Path;
 use rand::Rng;
 command!(dog(_ctx, msg, _args) {
     if let Err(why) = msg.channel_id.say(":dog:") {
@@ -42,6 +43,10 @@ command!(deepfry(_ctx, msg, _args) {
     let attachment = &msg.attachments[0]; //This is the actual Attachment object
     //let img_height = attachment.height.unwrap() as u32;
     //let img_width = attachment.width.unwrap() as u32;
+    let homepath = vec!["./test.jpg"];
+    let path = Path::new("./test.jpg");
+    //we need to check the attachment size here, if it's massive, we can't process it
+    //NEED TO FIND THE UPPER LIMIT
     let imgbytes = attachment.download(); //This is the bytes of the attachment
     match imgbytes {
         Ok(bytes_v) => {
@@ -52,11 +57,14 @@ command!(deepfry(_ctx, msg, _args) {
                     //Image was created successfully
                     println!("Image was opened successfully");
                     //Apply filters/fuck the image by recursively opening/resizing it
-                    image.brighten(32);
-                    
-                    /*This line is going to take some work. Need to convert image to either a File or need to store it locally to
-                    give this method a Path to the image.
-                    msg.channel_id.send_files(image); */
+                    match image.blur(1.5).adjust_contrast(50.0).brighten(-10).huerotate(10).unsharpen(4.3, 6).save(path) {
+                        Ok(_i) => println!("Image fucked and saved"),
+                        Err(e) => println!("Couldn't save image... {}", e),
+                    };
+                    //sends the test.jpg file
+                    let _ = msg.channel_id.send_files(homepath, |m| {
+                        m.content("")
+                    });
                 },
                 Err(e) => println!("Couldn't open the image {}", e),
             }
