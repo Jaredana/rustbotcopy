@@ -1,5 +1,6 @@
 use std::fmt::Write;
-
+use std::thread;
+use std::time::Duration;
 use crate::commands::*;
 command!(mute(_ctx, msg, args) {
     let user_id = &msg.mentions[0].id; //Get user mentioned in message
@@ -93,21 +94,33 @@ command!(commands(ctx, msg, _args) {
     }
 });
 command!(poll(_ctx, msg, args) {
-    let argument = args.single::<String>()?;
-    let data: Vec<&str> = argument.split("|").collect();
-    let question = data[0];
-    let mut count = 1;
-    let mut answers = Vec::new();
-    for x in data.iter().skip(1) {
-        answers.push((format!("{} {}","Option",count), x, true));
-        count += 1;
+    if args.is_empty() {
+        msg.channel_id.say("Invalid poll structure").unwrap();
     }
-    if let Err(why) = msg.channel_id.send_message(|m| m
-                .content("Poll:")
-                .embed(|e| e
-                    .title(question)
-                    .fields(answers)
-                    .colour((246, 111, 0)))) {
-                println!("Error sending message: {:?}", why);
-            }
+    else {
+        let argument = args.single::<String>()?;
+        let data: Vec<&str> = argument.split("|").collect();
+        let question = data[0];//set the question since its the first
+        let sleep_time= data[(data.len() - 1)].parse::<u64>().unwrap();//Wait time in seconds
+        let temp = &data[1..(data.len() -1)]; //vector of just answers with time and question removed
+        let mut count = 1;
+        let mut answers = Vec::new();//holds each answer tuple
+        for x in temp {
+            answers.push((format!("{} {}","Option",count), x, true));
+            count += 1;
+        }
+        if let Err(why) = msg.channel_id.send_message(|m| m
+            .content(format!("{}{}{}","___***React to this message to reply. You have ", sleep_time, " Seconds ***___"))
+            .embed(|e| e
+                .title(question)
+                .fields(answers)
+                .colour((246, 111, 0)))) {
+                    println!("Error sending message: {:?}", why);
+                }
+        //Now sleep for n seconds waiting for replies
+        thread::sleep(Duration::from_secs(sleep_time));
+        //After sleep, count reactions and display results
+        msg.channel_id.say("Poll responses").unwrap();
+    }
+    
 });

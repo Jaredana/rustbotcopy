@@ -174,7 +174,7 @@ pub fn initialize(client: &mut Client) {
                 .bucket("complicated")
                 .cmd(my_cmds::modcmd::commands))
             .command("poll", |c| c
-                .desc("Run a poll with emoji responses")
+                .desc("Run a poll with emoji responses. \n Format: Question|Ans1|Ans2|Ans3....")
                 .required_permissions(Permissions::ADMINISTRATOR)
                 .cmd(my_cmds::modcmd::poll))
         )
