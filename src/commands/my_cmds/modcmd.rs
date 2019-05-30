@@ -96,19 +96,17 @@ command!(poll(_ctx, msg, args) {
     let argument = args.single::<String>()?;
     let data: Vec<&str> = argument.split("|").collect();
     let question = data[0];
+    let mut count = 1;
     let mut answers = Vec::new();
-    for x in 1..data.len() {
-        answers.push(x);
+    for x in data.iter().skip(1) {
+        answers.push((format!("{} {}","Option",count), x, true));
+        count += 1;
     }
     if let Err(why) = msg.channel_id.send_message(|m| m
-                .content("This is a test poll")
+                .content("Poll:")
                 .embed(|e| e
                     .title(question)
-                    .fields(vec![
-                        ("Option 1 Emoji", "Option 1", true),
-                        ("Option 2 Emoji", "Option 2", true),
-                        ("Option 3 Emoji", "Option 3", true),
-                    ])
+                    .fields(answers)
                     .colour((246, 111, 0)))) {
                 println!("Error sending message: {:?}", why);
             }
