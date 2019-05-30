@@ -92,3 +92,24 @@ command!(commands(ctx, msg, _args) {
         println!("Error sending message: {:?}", why);
     }
 });
+command!(poll(_ctx, msg, args) {
+    let argument = args.single::<String>()?;
+    let data: Vec<&str> = argument.split("|").collect();
+    let question = data[0];
+    let mut answers = Vec::new();
+    for x in 1..data.len() {
+        answers.push(x);
+    }
+    if let Err(why) = msg.channel_id.send_message(|m| m
+                .content("This is a test poll")
+                .embed(|e| e
+                    .title(question)
+                    .fields(vec![
+                        ("Option 1 Emoji", "Option 1", true),
+                        ("Option 2 Emoji", "Option 2", true),
+                        ("Option 3 Emoji", "Option 3", true),
+                    ])
+                    .colour((246, 111, 0)))) {
+                println!("Error sending message: {:?}", why);
+            }
+});

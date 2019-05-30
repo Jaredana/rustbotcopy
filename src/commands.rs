@@ -173,6 +173,10 @@ pub fn initialize(client: &mut Client) {
             // Make this command use the "complicated" bucket.
                 .bucket("complicated")
                 .cmd(my_cmds::modcmd::commands))
+            .command("poll", |c| c
+                .desc("Run a poll with emoji responses")
+                .required_permissions(Permissions::ADMINISTRATOR)
+                .cmd(my_cmds::modcmd::poll))
         )
         .group("Fun", |g| g
             // Sets multiple prefixes for a group.
