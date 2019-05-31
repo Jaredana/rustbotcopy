@@ -98,6 +98,7 @@ command!(poll(_ctx, msg, args) {
         msg.channel_id.say("Invalid poll structure").unwrap();
     }
     else {
+        //PLEASE GOD SOMEBODY CLEAN UP THIS VARIABLE HELL IF POSSIBLE
         let argument = args.single::<String>()?;
         let data: Vec<&str> = argument.split("|").collect();
         let question = data[0];//set the question since its the first
@@ -105,22 +106,38 @@ command!(poll(_ctx, msg, args) {
         let temp = &data[1..(data.len() -1)]; //vector of just answers with time and question removed
         let mut count = 1;
         let mut answers = Vec::new();//holds each answer tuple
+        //Need to figure out a way to either have cmd defined emojis for options or way to make it use :one: :two: :three: by default
+        //NEEDS FIX
         for x in temp {
             answers.push((format!("{} {}","Option",count), x, true));
             count += 1;
         }
-        if let Err(why) = msg.channel_id.send_message(|m| m
+        let pollmsg = msg.channel_id.send_message(|m| m
             .content(format!("{}{}{}","___***React to this message to reply. You have ", sleep_time, " Seconds ***___"))
             .embed(|e| e
                 .title(question)
                 .fields(answers)
-                .colour((246, 111, 0)))) {
-                    println!("Error sending message: {:?}", why);
-                }
+                .colour((246, 111, 0)))).unwrap();
         //Now sleep for n seconds waiting for replies
         thread::sleep(Duration::from_secs(sleep_time));
         //After sleep, count reactions and display results
-        msg.channel_id.say("Poll responses").unwrap();
+        
+        //Have to get message from msgid from pollmsg variable
+        let pollmsgupd = msg.channel_id.message(pollmsg.id).unwrap();
+        let reactions = &pollmsgupd.reactions;
+        let mut finalreacts = Vec::new();
+        println!("{}{}{}", "There was ", reactions.len(), " reactions");
+
+        //Push only the data we need to a new vec for easy displaying
+        for react in reactions {
+            finalreacts.push((react.count, &react.reaction_type, false));
+        }
+        //This is where formatting is going to be tough.NEEDS FIX
+        msg.channel_id.send_message(|m| m
+            .content("Poll Results:")
+            .embed(|e| e
+                .fields(finalreacts)
+            )
+        ).unwrap();
     }
-    
 });
