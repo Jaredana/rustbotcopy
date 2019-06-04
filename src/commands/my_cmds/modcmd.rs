@@ -50,6 +50,7 @@ command!(mute(_ctx, msg, args) {
                         if let Err(why) = msg.channel_id.say("This server doesn't have the Muted role."){
                             println!("There was en err sending message {}" ,why);
                         }
+                        println!("got here");
                         //.permissions(Permissions::READ_MESSAGES) needs to also include Permissions::CONNECT somehow, and modifying bit field is frowned upon..
                         //This method is from the EditRole struct, so if we could get the right set of permissions before this line, we could avoid having to use
                         //.toggle(), .set(), or .insert()
